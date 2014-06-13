@@ -11,13 +11,13 @@
 
 PFont font;
 float qu, qv, du, dv, ou, ov;
-float k = 1.0;
+float k = 1.4;
 float m = 0;
 boolean flip_h = false;
 boolean flip_v = false;
 boolean flip_r = false;
 
-Faller[] f = new Faller[8];
+Faller[] f = new Faller[15];
 
 import processing.video.*;
 
@@ -37,6 +37,14 @@ void keyPressed() {
   case 'R':
     flip_r = !flip_r;
     break;
+  case '+':
+    if (k<6) k+=0.1;
+    reset();
+    break;
+  case '-':
+    if (k>0.5) k-=0.1;
+    reset();
+    break;
   }
 }
 
@@ -44,28 +52,31 @@ void setup() {
   size (displayWidth, displayHeight, P2D);
   frameRate(20);
 
-  video = new Capture(this, 424, 240);
+  video = new Capture(this, 960, 544);
   println(video.list());
 
   video.start();
 
   font = loadFont("OCRAStd-24.vlw");
+  noStroke();
+  
+  fill(0);
+  rect(0, 0, width, height);
+
+  reset();
+}
+
+void reset() {
+  textFont(font, 16*k);
   du = 10*k; 
   dv = 20*k;
   ou = 0;
   ov = 18*k;
   qu = width/du;
   qv = height/dv;
-  textFont(font, 16*k);
-  noStroke();
-  fill(0);
-  rect(0, 0, width, height);
   for (int i = 0; i<f.length; i++) {
     f[i] = new Faller();
   }
-
-  fill(0);
-  rect(0, 0, width, height);
 }
 
 void draw() {
@@ -116,7 +127,7 @@ void drawScreen() {
 }
 
 char getChar(float u, float v) {
-  return char( '0'+int(60*noise(u, v, m/50.0)) );
+  return char( '0'+int(60*noise(u, v, m/80.0)) );
 }
 
 void drawChar (char c, float u, float v) {
@@ -131,7 +142,10 @@ class Faller {
   float u;
   float v;
   float rate;
-  float count = 6;
+  char[] message = {
+    'M', '@', 'u', 'J', '4', '3', 'U', 'R',
+  };
+  float count = 8;
 
   Faller() {
     reset();
@@ -154,16 +168,23 @@ class Faller {
   void draw() {
     float x =int(u);
     float y =int(v);
-    for (int i = 0; i<5; i++) {
+    for (int i = 0; i<count; i++) {
       fill(0, 0, 0, 40);
       rect(x*du+ou, (y-i)*dv+ov, du, -dv);
 
       if (i==0) fill( 140, 255, 120);
-      else fill( 80, 50+(1.0-i/8.0)*205, 40);
+      else fill( 100, 155+(1.0-i/8.0)*100, 60);
 
-      drawChar(getChar(x, i/10.0), x, y-i);
+      //      drawChar(getChar(x, i/10.0), x, y-i);
+      drawChar(getChar(x, y-i), x, y-i);
     }
     update();
+  }
+
+  char getChar (float x, float y) {
+    float offset = m/2;
+
+    return message[int(abs(y+offset))%message.length];
   }
 }
 
