@@ -41,7 +41,6 @@ void keyPressed() {
 }
 
 void setup() {
-  orientation(PORTRAIT);
   size (displayWidth, displayHeight, P2D);
   frameRate(20);
   font = loadFont("OCRAStd-24.vlw");
@@ -51,7 +50,6 @@ void setup() {
   ov = 18*k;
   qu = width/du;
   qv = height/dv;
-  println(qv);
   textFont(font, 16*k);
   noStroke();
   fill(0);
@@ -63,7 +61,6 @@ void setup() {
   video = new Capture(this, 424, 240);
   println(video.list());
 
-  // Start capturing the images from the camera
   video.start();
   fill(0, 120);
   rect(0, 0, width, height);
@@ -71,8 +68,6 @@ void setup() {
 
 void draw() {
   video.loadPixels();
-  //  background(0, 15, 0);
-  //drawScreen();
   fill(0, 70);
   rect(0, 0, width, height);
 
