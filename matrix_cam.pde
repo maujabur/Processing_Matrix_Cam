@@ -11,7 +11,7 @@
 
 PFont font;
 float qu, qv, du, dv, ou, ov;
-float k = 1.6;
+float k = 1.0;
 float m = 0;
 boolean flip_h = false;
 boolean flip_v = false;
@@ -43,6 +43,12 @@ void keyPressed() {
 void setup() {
   size (displayWidth, displayHeight, P2D);
   frameRate(20);
+
+  video = new Capture(this, 424, 240);
+  println(video.list());
+
+  video.start();
+
   font = loadFont("OCRAStd-24.vlw");
   du = 10*k; 
   dv = 20*k;
@@ -58,11 +64,7 @@ void setup() {
     f[i] = new Faller();
   }
 
-  video = new Capture(this, 424, 240);
-  println(video.list());
-
-  video.start();
-  fill(0, 120);
+  fill(0);
   rect(0, 0, width, height);
 }
 
@@ -89,12 +91,12 @@ void drawScreen() {
     qy = video.height;
     qx = video.width;
   }
-  for (float v = 0; v<qv; v++) {
+  for (float v = 0; v<=qv-1; v++) {
     int y;
     if (flip_v)  y = (int)map(v, 0, qv-1, qy-1, 0);
     else         y = (int)map(v, 0, qv-1, 0, qy-1);
 
-    for (float u = 0; u<qu; u++) {
+    for (float u = 0; u<=qu-1; u++) {
       int x;
       if (flip_h) x = (int)map (u, 0, qu-1, qx-1, 0);
       else        x = (int)map (u, 0, qu-1, 0, qx-1);
